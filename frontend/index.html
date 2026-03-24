@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- 移动端优化 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="theme-color" content="#C41E3A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- SEO 优化 -->
+    <meta name="description" content="易经八字命理智能分析系统 - 知命而行，顺势而为" />
+    <meta name="keywords" content="八字命理,易经,命理分析,姻缘匹配,流年运势" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="命理殿堂 - 易经八字命理智能分析" />
+    <meta property="og:description" content="知命而行，顺势而为 - 以易理为根，以AI为翼，助君趋吉避凶" />
+    <meta property="og:type" content="website" />
+    
+    <!-- 字体优化 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet" />
+    
+    <title>命理殿堂 - 易经八字命理智能分析</title>
+    
+    <!-- 移动端安全区域支持 -->
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sar: env(safe-area-inset-right);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+      }
+      
+      /* 禁用电话自动识别 */
+      a[href^="tel:"] {
+        color: inherit;
+        text-decoration: none;
+      }
+      
+      /* 优化移动端触摸反馈 */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* 优化滚动 */
+      html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* 禁用选择复制 */
+      body {
+        -webkit-user-select: none;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body class="bg-china-white">
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Noto Serif SC', serif;
+  background-color: #FDF5E6;
+  min-height: 100vh;
+}
+
+/* 中国风边框 */
+.chinese-border {
+  border: 2px solid #C41E3A;
+  border-radius: 8px;
+  position: relative;
+}
+
+.chinese-border::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid #D4A84B;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* 中国风卡片 */
+.chinese-card {
+  background: linear-gradient(135deg, #FAF0E6 0%, #F5E6D3 100%);
+  border: 1px solid #D4A84B;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
+}
+
+/* 中国风按钮 */
+.chinese-btn {
+  background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+  color: #FDF5E6;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.chinese-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);
+}
+
+/* 标题装饰 */
+.chinese-title {
+  color: #C41E3A;
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+}
+
+.chinese-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #D4A84B, transparent);
+}
