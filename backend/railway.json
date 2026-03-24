@@ -3,9 +3,9 @@
   "build": {
     "builder": "NIXPACKS",
     "nixpacksPkgs": ["nodejs_18_x"],
-    "installCommand": "cd backend && npm install",
-    "buildCommand": "cd backend && npm run build",
-    "startCommand": "cd backend && npm start"
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "startCommand": "npm start"
   },
   "deploy": {
     "numReplicas": 1,
