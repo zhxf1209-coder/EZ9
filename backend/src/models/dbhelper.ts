@@ -13,7 +13,10 @@ export function prepare(sql: string) {
       db.run(sql, params)
       saveDB()
       const result = db.exec("SELECT last_insert_rowid() as id")
-      const lastInsertRowid = result[0]?.values[0]?.[0] || 0
+      let lastInsertRowid = 0
+      if (result && result.length > 0 && result[0].values && result[0].values.length > 0) {
+        lastInsertRowid = result[0].values[0][0] as number
+      }
       return { lastInsertRowid }
     },
     get: (...params: any[]) => {
