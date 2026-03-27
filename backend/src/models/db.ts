@@ -82,6 +82,40 @@ export async function initDB() {
     )
   `)
 
+  db.run(`
+    CREATE TABLE IF NOT EXISTS admins (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS site_config (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      config_key TEXT UNIQUE NOT NULL,
+      config_value TEXT,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+  const existingAdmin = db.exec("SELECT id FROM admins WHERE username = 'admin'")
+  if (existingAdmin.length === 0 || existingAdmin[0].values.length === 0) {
+    const bcrypt = await import('bcryptjs')
+    const hashedPassword = await bcrypt.default.hash('aa631631', 10)
+    db.run("INSERT INTO admins (username, password) VALUES (?, ?)", ['admin', hashedPassword])
+    console.log('Default admin account created: admin / aa631631')
+  }
+
+  const configKeys = ['wechat_qrcode', 'contact_text', 'contact_title']
+  for (const key of configKeys) {
+    const existing = db.exec(`SELECT id FROM site_config WHERE config_key = '${key}'`)
+    if (existing.length === 0 || existing[0].values.length === 0) {
+      db.run("INSERT INTO site_config (config_key, config_value) VALUES (?, ?)", [key, ''])
+    }
+  }
+
   saveDB()
   console.log('Database initialized')
 }

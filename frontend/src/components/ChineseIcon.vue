@@ -6,6 +6,7 @@
     :class="className"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    class="chinese-icon"
   >
     <!-- 八字分析图标 - 阴阳八卦 + 四柱 -->
     <template v-if="type === 'bazi'">
@@ -120,6 +121,54 @@
       <ellipse cx="40" cy="42" rx="6" ry="3" fill="#22C55E" transform="rotate(30 40 42)"/>
     </template>
 
+    <!-- 性格分析图标 - 山水人物 -->
+    <template v-else-if="type === 'personality'">
+      <circle cx="32" cy="32" r="30" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+      <!-- 山 -->
+      <path d="M12 44 L22 28 L28 36 L38 24 L52 44 Z" fill="#3B82F6" opacity="0.3"/>
+      <path d="M16 44 L24 32 L30 38 L40 26 L48 44 Z" fill="#3B82F6" opacity="0.5"/>
+      <!-- 水 -->
+      <path d="M8 48 Q20 44 32 48 Q44 52 56 48" stroke="#3B82F6" stroke-width="2" fill="none"/>
+      <!-- 太阳 -->
+      <circle cx="48" cy="16" r="6" fill="#FBBF24"/>
+    </template>
+
+    <!-- 事业财运图标 - 铜钱 -->
+    <template v-else-if="type === 'career'">
+      <circle cx="32" cy="32" r="30" fill="#FEF9C3" stroke="#CA8A04" stroke-width="2"/>
+      <!-- 外圆 -->
+      <circle cx="32" cy="32" r="20" stroke="#CA8A04" stroke-width="3" fill="none"/>
+      <!-- 内方 -->
+      <rect x="24" y="24" width="16" height="16" fill="none" stroke="#CA8A04" stroke-width="2" transform="rotate(45 32 32)"/>
+      <!-- 装饰 -->
+      <text x="32" y="38" font-size="16" fill="#CA8A04" text-anchor="middle" font-weight="bold">财</text>
+    </template>
+
+    <!-- 姻缘感情图标 - 桃花 -->
+    <template v-else-if="type === 'love'">
+      <circle cx="32" cy="32" r="30" fill="#FDF2F8" stroke="#EC4899" stroke-width="2"/>
+      <!-- 桃花 -->
+      <g transform="translate(32, 32)">
+        <ellipse cx="0" cy="-8" rx="6" ry="8" fill="#F9A8D4"/>
+        <ellipse cx="-7" cy="-3" rx="6" ry="8" fill="#FBCFE8" transform="rotate(-45)"/>
+        <ellipse cx="7" cy="-3" rx="6" ry="8" fill="#FBCFE8" transform="rotate(45)"/>
+        <ellipse cx="-7" cy="3" rx="6" ry="8" fill="#F9A8D4" transform="rotate(-90)"/>
+        <ellipse cx="7" cy="3" rx="6" ry="8" fill="#F9A8D4" transform="rotate(90)"/>
+        <circle cx="0" cy="0" r="4" fill="#FBBF24"/>
+      </g>
+    </template>
+
+    <!-- 健康养生图标 - 葫芦 -->
+    <template v-else-if="type === 'health'">
+      <circle cx="32" cy="32" r="30" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <!-- 葫芦 -->
+      <path d="M32 20 C24 20 20 28 20 36 C20 44 24 48 32 48 C40 48 44 44 44 36 C44 28 40 20 32 20 Z" fill="#22C55E" stroke="#16A34A" stroke-width="2"/>
+      <!-- 葫芦口 -->
+      <rect x="28" y="16" width="8" height="6" fill="#16A34A"/>
+      <!-- 葫芦藤 -->
+      <path d="M32 16 Q36 12 40 14" stroke="#16A34A" stroke-width="2" fill="none"/>
+    </template>
+
     <!-- 默认/加载图标 -->
     <template v-else>
       <circle cx="32" cy="32" r="20" stroke="currentColor" stroke-width="2" stroke-dasharray="4 2"/>
@@ -130,7 +179,7 @@
 
 <script setup lang="ts">
 interface Props {
-  type?: 'bazi' | 'archive' | 'daily' | 'yearly' | 'marriage' | 'default'
+  type?: 'bazi' | 'archive' | 'daily' | 'yearly' | 'marriage' | 'personality' | 'career' | 'love' | 'health' | 'default'
   size?: number | string
   className?: string
 }
@@ -152,5 +201,14 @@ const yangColor = '#FEF3C7' // 阳 - 白色/金色
 svg {
   display: inline-block;
   vertical-align: middle;
+}
+
+.chinese-icon {
+  transition: all 0.3s ease;
+}
+
+.chinese-icon:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 </style>

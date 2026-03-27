@@ -16,7 +16,7 @@
         @profile-selected="onProfileSelected"
         @form-changed="onFormChanged"
       >
-        <template #manual-form="{ form: slotForm, selectLocation: slotSelectLocation }">
+        <template #manual-form="{ form: slotForm, selectLocation: slotSelectLocation, showLocationPicker: slotShowLocationPicker }">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <label class="block text-china-brown mb-2">
@@ -94,7 +94,7 @@
                   {{ slotForm.location?.name || '未选择' }}
                 </div>
                 <button
-                  @click="slotSelectLocation"
+                  @click="slotShowLocationPicker(true)"
                   class="px-4 py-2 border border-china-gold rounded-lg text-china-red hover:bg-red-50"
                 >
                   选择

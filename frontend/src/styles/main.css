@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Noto Serif SC', serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Alibaba PuHuiTi 2.0', 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background-color: #FDF5E6;
   min-height: 100vh;
+}
+
+/* 标题使用衬线体 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Noto Serif SC', serif;
 }
 
 /* 中国风边框 */
@@ -69,4 +74,159 @@ body {
   width: 60%;
   height: 3px;
   background: linear-gradient(90deg, transparent, #D4A84B, transparent);
+}
+
+/* 云纹装饰 */
+.cloud-pattern {
+  position: relative;
+}
+
+.cloud-pattern::before {
+  content: '☁';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #D4A84B;
+  opacity: 0.3;
+}
+
+/* 水墨风格分隔线 */
+.ink-divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #C41E3A 20%, #D4A84B 50%, #C41E3A 80%, transparent);
+  margin: 1.5rem 0;
+  opacity: 0.5;
+}
+
+/* 传统边框 */
+.traditional-border {
+  position: relative;
+  border: 2px solid #C41E3A;
+}
+
+.traditional-border::before,
+.traditional-border::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #D4A84B;
+}
+
+.traditional-border::before {
+  top: -5px;
+  left: -5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.traditional-border::after {
+  bottom: -5px;
+  right: -5px;
+  border-left: none;
+  border-top: none;
+}
+
+/* 装饰角 */
+.decorative-corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px dashed;
+  opacity: 0.3;
+}
+
+.decorative-corner.top-left {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+  border-color: #C41E3A;
+}
+
+.decorative-corner.top-right {
+  top: 8px;
+  right: 8px;
+  border-left: none;
+  border-bottom: none;
+  border-color: #C41E3A;
+}
+
+.decorative-corner.bottom-left {
+  bottom: 8px;
+  left: 8px;
+  border-right: none;
+  border-top: none;
+  border-color: #C41E3A;
+}
+
+.decorative-corner.bottom-right {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+  border-color: #C41E3A;
+}
+
+/* 阴影效果 */
+.chinese-shadow {
+  box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1), 0 2px 10px rgba(212, 168, 75, 0.1);
+}
+
+/* 悬浮阴影 */
+.chinese-shadow-hover:hover {
+  box-shadow: 0 8px 30px rgba(196, 30, 58, 0.2), 0 4px 15px rgba(212, 168, 75, 0.15);
+}
+
+/* 渐变背景 */
+.gradient-china {
+  background: linear-gradient(135deg, #FAF0E6 0%, #F5E6D3 50%, #FDF5E6 100%);
+}
+
+/* 动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* 响应式装饰 */
+@media (max-width: 640px) {
+  .decorative-corner {
+    width: 20px;
+    height: 20px;
+  }
 }

@@ -3,27 +3,27 @@
     <h3 class="chinese-title text-lg mb-4 text-center">人生运势曲线</h3>
     <div ref="chartRef" class="w-full h-80"></div>
     
-    <!-- 关键点详情 - 只显示近十年3项 -->
-    <div v-if="recentKeyPoints.length" class="mt-4 space-y-3">
-      <h4 class="font-semibold text-china-brown text-center">近十年关键事件</h4>
+    <!-- 关键点详情 - 只显示今年及未来的关键事件 -->
+    <div v-if="futureKeyPoints.length" class="mt-4 space-y-3">
+      <h4 class="font-semibold text-stone-700 text-center">未来关键事件</h4>
       <div 
-        v-for="point in recentKeyPoints" 
+        v-for="point in futureKeyPoints" 
         :key="point.year"
-        class="p-4 rounded-lg border-l-4"
+        class="p-4 rounded-lg border-l-4 bg-stone-50"
         :class="getPointClass(point.type)"
       >
         <div class="flex justify-between items-start mb-2">
-          <div>
-            <span class="font-bold text-china-red text-lg">{{ point.year }}年</span>
-            <span v-if="birthYear" class="text-sm text-gray-500 ml-2">({{ point.year - birthYear }}岁)</span>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-800 text-lg">{{ point.year }}年</span>
+            <span v-if="birthYear" class="text-sm text-stone-500">({{ point.year - birthYear }}岁)</span>
           </div>
-          <span class="text-sm px-3 py-1 rounded-full font-medium" :class="getBadgeClass(point.type)">
+          <span class="text-xs px-3 py-1 rounded-full font-medium" :class="getBadgeClass(point.type)">
             {{ getTypeLabel(point.type) }}
           </span>
         </div>
-        <div class="font-medium text-china-brown text-base mb-1">{{ point.title }}</div>
-        <div class="text-sm text-gray-600 leading-relaxed mb-2">{{ point.description }}</div>
-        <div v-if="point.advice" class="text-sm bg-green-50 p-2 rounded border border-green-200">
+        <div class="font-medium text-stone-700 text-base mb-1">{{ point.title }}</div>
+        <div class="text-sm text-stone-600 leading-relaxed mb-2">{{ point.description }}</div>
+        <div v-if="point.advice" class="text-sm bg-green-50 p-2 rounded border border-green-200 mt-2">
           <span class="font-semibold text-green-700">💡 建议：</span>
           <span class="text-green-700">{{ point.advice }}</span>
         </div>
@@ -78,18 +78,17 @@ let chart: echarts.ECharts | null = null
 
 const keyPoints = ref<KeyEvent[]>([])
 
-// 计算近十年的关键点（最多3项）
-const recentKeyPoints = computed(() => {
+// 计算未来关键点（今年及以后，最多5项）
+const futureKeyPoints = computed(() => {
   const currentYear = new Date().getFullYear()
-  const tenYearsAgo = currentYear - 10
   
-  // 筛选近十年或未来十年的关键点
-  const recent = keyPoints.value.filter(p => p.year >= tenYearsAgo && p.year <= currentYear + 10)
+  // 只筛选今年及未来的关键点
+  const future = keyPoints.value.filter(p => p.year >= currentYear)
   
-  // 按与当前年的距离排序，优先显示最近的
-  return recent
-    .sort((a, b) => Math.abs(a.year - currentYear) - Math.abs(b.year - currentYear))
-    .slice(0, 3)
+  // 按年份排序，从今年开始
+  return future
+    .sort((a, b) => a.year - b.year)
+    .slice(0, 5)
 })
 
 // 限制时间线到80岁

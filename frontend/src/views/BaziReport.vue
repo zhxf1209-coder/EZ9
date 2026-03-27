@@ -1,236 +1,427 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
+  <div class="min-h-screen bg-stone-50">
     <!-- 加载界面 -->
-    <div v-if="loading" class="min-h-screen flex flex-col items-center justify-center p-6">
-      <div class="text-center mb-8">
-        <div class="text-6xl mb-4">☰⚋☵☷</div>
-        <h2 class="text-2xl font-bold text-china-red mb-2">命理分析中</h2>
-        <p class="text-china-brown">请稍候，AI正在深度分析您的八字命理...</p>
+    <div v-if="loading" class="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      <!-- 吉祥背景 -->
+      <div class="absolute inset-0">
+        <!-- 暖色调背景 -->
+        <div class="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 opacity-60"></div>
+        
+        <!-- 装饰性云纹 -->
+        <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="warmGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="400" cy="300" rx="250" ry="180" fill="url(#warmGlow)" opacity="0.4"/>
+          <!-- 祥云装饰 -->
+          <path d="M100 500 Q200 450 300 480 Q400 510 500 470" stroke="#d4af37" stroke-width="2" fill="none" opacity="0.3"/>
+          <path d="M200 520 Q350 480 450 510 Q550 540 650 500" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.2"/>
+        </svg>
       </div>
 
-      <!-- 进度条 -->
-      <div class="w-full max-w-md mb-8">
-        <div class="relative">
-          <div class="overflow-hidden h-3 text-xs flex rounded-full bg-gray-200">
-            <div
-              :style="{ width: progress + '%' }"
-              class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-china-red to-red-400 transition-all duration-500"
-            ></div>
-          </div>
-        </div>
-        <div class="flex justify-between mt-2 text-xs text-gray-500">
-          <span>开始分析</span>
-          <span>{{ progress }}%</span>
-          <span>分析完成</span>
+      <!-- 中心八卦图 - 温暖色调 -->
+      <div class="relative mb-12">
+        <svg class="w-52 h-52 md:w-64 md:h-64" viewBox="0 0 200 200">
+          <!-- 外圈 - 金色/铜色 -->
+          <circle cx="100" cy="100" r="98" fill="none" stroke="#d4af37" stroke-width="2"/>
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#b8860b" stroke-width="1"/>
+          
+          <!-- 八卦符号 - 温暖红 -->
+          <g fill="#C41E3A" font-family="'Noto Serif SC', serif" font-size="14" font-weight="bold">
+            <text x="100" y="18" text-anchor="middle">乾</text>
+            <text x="182" y="48" text-anchor="middle">兑</text>
+            <text x="182" y="108" text-anchor="middle">离</text>
+            <text x="182" y="168" text-anchor="middle">震</text>
+            <text x="100" y="198" text-anchor="middle">巽</text>
+            <text x="18" y="168" text-anchor="middle">坎</text>
+            <text x="18" y="108" text-anchor="middle">艮</text>
+            <text x="18" y="48" text-anchor="middle">坤</text>
+          </g>
+
+          <!-- 太极 - 传统配色 -->
+          <circle cx="100" cy="100" r="55" fill="none" stroke="#C41E3A" stroke-width="2"/>
+          <path d="M100 45 A55 55 0 0 1 100 155 A27.5 27.5 0 0 0 100 100 A27.5 27.5 0 0 1 100 45" fill="#C41E3A"/>
+          <circle cx="100" cy="72" r="9" fill="#ffd700"/>
+          <circle cx="100" cy="128" r="9" fill="#C41E3A"/>
+        </svg>
+
+        <!-- 旋转光环 - 温暖金色 -->
+        <div class="absolute inset-0 animate-spin-slow">
+          <svg class="w-full h-full" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#d4af37" stroke-width="1" stroke-dasharray="4 4"/>
+          </svg>
         </div>
       </div>
 
-      <!-- 分析步骤 -->
-      <div class="w-full max-w-md space-y-3">
+      <!-- 标题区域 -->
+      <div class="text-center mb-8 relative z-10">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+          命理推演中
+        </h2>
+        <p class="text-amber-700 text-base tracking-wide">福祸无门，惟人自召</p>
+      </div>
+
+      <!-- 进度条 - 温暖渐变 -->
+      <div class="w-full max-w-sm mb-8 relative z-10">
+        <div class="h-2 bg-amber-100 rounded-full overflow-hidden shadow-inner">
+          <div
+            :style="{ width: progress + '%' }"
+            class="h-full bg-gradient-to-r from-china-red via-rose-500 to-amber-500 transition-all duration-1000 ease-out shadow-lg"
+          ></div>
+        </div>
+        <div class="flex justify-between mt-4 text-sm text-amber-700 tracking-widest font-medium">
+          <span class="flex items-center gap-1">
+            <span class="w-2 h-2 bg-china-red rounded-full"></span>
+            起始
+          </span>
+          <span class="text-xl font-bold text-china-red">{{ progress }}%</span>
+          <span class="flex items-center gap-1">
+            圆满
+            <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 步骤列表 - 温暖配色 -->
+      <div class="w-full max-w-sm space-y-3 relative z-10">
         <div
           v-for="(step, index) in analysisSteps"
           :key="index"
-          class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300"
-          :class="step.status === 'completed' ? 'bg-green-50' : step.status === 'active' ? 'bg-china-red/10' : 'bg-gray-50'"
+          class="flex items-center gap-3 p-3 rounded-lg transition-all duration-500"
+          :class="{
+            'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 shadow-sm': step.status === 'completed',
+            'bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 shadow-md animate-pulse': step.status === 'active',
+            'bg-white/50 border border-stone-200': step.status === 'pending'
+          }"
         >
-          <div class="w-8 h-8 rounded-full flex items-center justify-center"
-               :class="step.status === 'completed' ? 'bg-green-500 text-white' : step.status === 'active' ? 'bg-china-red text-white' : 'bg-gray-300 text-gray-500'">
-            <span v-if="step.status === 'completed'" class="text-sm">✓</span>
-            <span v-else-if="step.status === 'active'" class="text-sm animate-pulse">{{ index + 1 }}</span>
-            <span v-else class="text-sm">{{ index + 1 }}</span>
+          <div
+            class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-sm"
+            :class="{
+              'bg-gradient-to-br from-green-500 to-emerald-600 text-white': step.status === 'completed',
+              'bg-gradient-to-br from-china-red to-rose-600 text-white': step.status === 'active',
+              'bg-stone-100 text-stone-400 border border-stone-300': step.status === 'pending'
+            }"
+          >
+            <span v-if="step.status === 'completed'">✓</span>
+            <span v-else>{{ index + 1 }}</span>
           </div>
-          <div class="flex-1">
-            <p class="text-sm font-medium" :class="step.status === 'active' ? 'text-china-red' : 'text-gray-700'">
-              {{ step.text }}
-            </p>
-            <p v-if="step.status === 'active'" class="text-xs text-gray-500">正在分析中...</p>
-            <p v-else-if="step.status === 'completed'" class="text-xs text-green-600">已完成</p>
-          </div>
+          <span
+            class="text-sm tracking-wide transition-colors font-medium"
+            :class="{
+              'text-green-700': step.status === 'completed',
+              'text-china-red': step.status === 'active',
+              'text-stone-400': step.status === 'pending'
+            }"
+          >{{ step.text }}</span>
         </div>
+      </div>
+
+      <!-- 底部吉祥语 -->
+      <div class="mt-8 text-center relative z-10">
+        <p class="text-amber-600 text-sm tracking-wider italic">
+          天道循环，吉人自有天相
+        </p>
       </div>
     </div>
 
     <!-- 报告内容 -->
     <template v-else-if="report">
-      <div class="max-w-4xl mx-auto p-4 pb-20">
-        <!-- 顶部四柱展示 -->
-        <div class="chinese-card p-4 md:p-6 mb-6">
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-            <div v-for="(pillar, key) in fourPillars" :key="key" class="text-center">
-              <div class="bg-gradient-to-b from-red-50 to-red-100 rounded-xl p-3 md:p-4 border-2 border-red-200 shadow-sm">
-                <div class="text-2xl md:text-3xl font-bold text-china-red mb-1 md:mb-2">{{ pillar.value }}</div>
-                <div class="text-xs text-gray-600">{{ pillar.ganZhi }}</div>
-              </div>
-              <div class="text-sm text-china-brown mt-2 font-medium">{{ pillar.label }}</div>
+      <div class="max-w-5xl mx-auto px-4 py-8 pb-20">
+        <!-- 标题区 -->
+        <header class="text-center mb-12">
+          <div class="inline-block relative">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-widest mb-2 text-transparent bg-clip-text bg-gradient-to-r from-china-red via-rose-600 to-amber-600">
+              八字命理报告
+            </h1>
+            <div class="flex justify-center gap-8 mt-4 text-sm text-amber-700 tracking-wider">
+              <span>年轮</span>
+              <span>月华</span>
+              <span>日主</span>
+              <span>时序</span>
             </div>
           </div>
+        </header>
 
-          <!-- 日主说明 -->
-          <div class="mt-4 text-center">
-            <span class="text-china-brown">日主：</span>
-            <span class="text-china-red font-bold">{{ report?.bazi?.dayMaster || '' }}</span>
-            <span class="text-china-brown ml-2">{{ report?.bazi?.dayMasterWuxing || '' }}</span>
-          </div>
-        </div>
-
-        <!-- 五行占比图 -->
-        <div class="chinese-card p-4 md:p-6 mb-6">
-          <h3 class="text-lg font-bold text-china-brown mb-4 text-center">五行分布</h3>
-          <div class="grid grid-cols-3 sm:grid-cols-5 gap-3 md:gap-4 mb-4">
-            <div
-              v-for="(item, key) in wuxingData"
-              :key="key"
-              class="text-center"
-            >
-              <div class="relative inline-block">
-                <svg class="w-14 h-14 md:w-16 md:h-16 transform -rotate-90">
-                  <circle
-                    cx="32" cy="32" r="28"
-                    stroke="#e5e7eb"
-                    stroke-width="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="32" cy="32" r="28"
-                    :stroke="item.color"
-                    stroke-width="8"
-                    fill="none"
-                    :stroke-dasharray="`${item.percentage * 1.76} 176`"
-                    class="transition-all duration-1000"
-                  />
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <span class="text-xs font-bold text-gray-700">{{ item.count }}</span>
-                </div>
-              </div>
-              <div class="mt-2">
-                <div class="text-base md:text-lg font-bold" :style="{ color: item.color }">{{ item.label }}</div>
-                <div class="text-xs text-gray-500">{{ item.percentage }}%</div>
-              </div>
+        <!-- 四柱展示 -->
+        <section class="mb-12">
+          <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-lg p-6 md:p-8 border-2 border-amber-200 relative overflow-hidden shadow-md">
+            <!-- 动态背景纹理 - 温暖金色 -->
+            <div class="absolute inset-0 opacity-10">
+              <svg class="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d4af37" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)"/>
+              </svg>
             </div>
-          </div>
 
-          <!-- 五行条形图 -->
-          <div class="space-y-2">
-            <div v-for="(item, key) in wuxingData" :key="key" class="flex items-center">
-              <div class="w-10 md:w-12 text-xs md:text-sm text-gray-600">{{ item.label }}</div>
-              <div class="flex-1 bg-gray-200 rounded-full h-3 md:h-4 overflow-hidden">
+            <!-- 角落装饰 - 传统纹样 - 温暖金色 -->
+            <div class="absolute top-2 left-2 w-12 h-12 border-l-2 border-t-2 border-amber-400"></div>
+            <div class="absolute top-2 right-2 w-12 h-12 border-r-2 border-t-2 border-amber-400"></div>
+            <div class="absolute bottom-2 left-2 w-12 h-12 border-l-2 border-b-2 border-amber-400"></div>
+            <div class="absolute bottom-2 right-2 w-12 h-12 border-r-2 border-b-2 border-amber-400"></div>
+
+            <div class="relative z-10">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 <div
-                  :style="{ width: item.percentage + '%', backgroundColor: item.color }"
-                  class="h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-2"
+                  v-for="(pillar, key) in fourPillars"
+                  :key="key"
+                  class="text-center group"
                 >
-                  <span v-if="item.percentage > 10" class="text-xs text-white font-bold">{{ item.count }}</span>
+                  <div class="relative">
+                    <!-- 外层装饰框 - 温暖渐变 -->
+                    <div class="absolute -inset-1 bg-gradient-to-br from-amber-200 to-rose-200 rounded-xl opacity-60 blur-sm group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <!-- 主卡片 - 温暖配色 -->
+                    <div class="relative bg-gradient-to-b from-white to-amber-50 rounded-xl p-4 md:p-6 border-2 border-amber-200 shadow-sm group-hover:shadow-xl transition-all duration-500 group-hover:-translate-y-2 group-hover:border-rose-300">
+                      <!-- 顶部装饰线 -->
+                      <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-60"></div>
+                      
+                      <!-- 四柱值 - 渐变色 -->
+                      <div class="text-3xl md:text-4xl font-bold mb-2 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+                        {{ pillar.value }}
+                      </div>
+                      
+                      <!-- 天干 -->
+                      <div class="text-xs text-amber-600 tracking-wider font-medium">{{ pillar.ganZhi }}</div>
+                      
+                      <!-- 底部装饰 -->
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-300 to-transparent opacity-50"></div>
+                    </div>
+
+                    <!-- 标签 - 温暖配色 -->
+                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-amber-50 to-rose-50 px-3 py-1 rounded-full border border-amber-300 shadow-sm">
+                      <span class="text-xs text-amber-700 font-medium tracking-wider">{{ pillar.label }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="w-10 md:w-12 text-xs md:text-sm text-gray-500 text-right">{{ item.count }}</div>
+
+              <!-- 日主信息 - 温暖配色 -->
+              <div class="mt-12 text-center">
+                <div class="inline-flex items-center gap-4 px-8 py-4 bg-white rounded-xl border-2 border-amber-200 shadow-md hover:shadow-lg transition-shadow">
+                  <span class="text-amber-700 font-medium">日主</span>
+                  <span class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wide">{{ report?.bazi?.dayMaster || '' }}</span>
+                  <span class="text-amber-300 text-2xl">|</span>
+                  <span class="text-2xl font-bold" :style="{ color: getWuxingColor(report?.bazi?.dayMasterWuxing || '') }">
+                    {{ report?.bazi?.dayMasterWuxing || '' }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- 五行分布 -->
+        <section class="mb-12">
+          <h3 class="text-2xl font-bold text-center mb-8 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+            五行气数
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- 环形图 -->
+            <div class="bg-stone-50 rounded-lg p-6 border border-stone-200">
+              <h4 class="text-lg font-medium text-stone-700 mb-6 text-center">五行分布</h4>
+              <div class="flex justify-center mb-6">
+                <div class="relative">
+                  <svg class="w-40 h-40 md:w-48 md:h-48 transform -rotate-90">
+                    <circle cx="96" cy="96" r="80" stroke="#e5e5e5" stroke-width="16" fill="none"/>
+                    <circle
+                      v-for="(item, index) in wuxingData"
+                      :key="key"
+                      cx="96"
+                      cy="96"
+                      r="80"
+                      :stroke="item.color"
+                      stroke-width="16"
+                      fill="none"
+                      :stroke-dasharray="`${item.percentage * 5.02} 502`"
+                      :stroke-dashoffset="-getOffset(index)"
+                      class="transition-all duration-1000"
+                    />
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <div class="text-3xl font-bold text-stone-800">八</div>
+                      <div class="text-xs text-stone-500">字</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 图例 -->
+              <div class="grid grid-cols-5 gap-2">
+                <div v-for="item in wuxingData" :key="key" class="text-center">
+                  <div class="w-3 h-3 rounded-full mx-auto mb-1" :style="{ backgroundColor: item.color }"></div>
+                  <div class="text-xs text-stone-600">{{ item.label }}</div>
+                  <div class="text-xs text-stone-400">{{ item.count }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 条形图 -->
+            <div class="bg-stone-50 rounded-lg p-6 border border-stone-200">
+              <h4 class="text-lg font-medium text-stone-700 mb-6 text-center">气数强弱</h4>
+              <div class="space-y-4">
+                <div v-for="item in wuxingData" :key="key" class="flex items-center gap-3 group">
+                  <div class="w-8 text-center">
+                    <span 
+                      class="text-2xl font-bold transition-all duration-300 group-hover:scale-125 group-hover:-translate-y-1 inline-block"
+                      :style="{ color: item.color, textShadow: `0 2px 8px ${item.color}40` }"
+                    >
+                      {{ item.label }}
+                    </span>
+                  </div>
+                  <div class="flex-1 h-6 bg-stone-200 rounded-full overflow-hidden">
+                    <div
+                      :style="{ width: item.percentage + '%', backgroundColor: item.color }"
+                      class="h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-2 shadow-md"
+                    >
+                      <span v-if="item.percentage > 10" class="text-xs text-white font-medium">{{ item.count }}</span>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right text-sm text-stone-600 font-medium">{{ item.percentage }}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- 命理总评 -->
-        <div class="chinese-card p-4 md:p-6 mb-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h3 class="text-lg font-bold text-china-brown text-center sm:text-left">命理总评</h3>
-            <div class="flex items-center justify-center sm:justify-end space-x-2">
-              <span class="text-3xl md:text-4xl font-bold text-china-red">{{ report.overallScore }}</span>
-              <span class="text-gray-500">/10</span>
+        <section class="mb-12">
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 md:p-8 border-2 border-amber-200 relative shadow-md">
+            <div class="absolute -top-3 left-8 bg-gradient-to-r from-amber-50 to-orange-50 px-4">
+              <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wider">
+                命理总评
+              </h3>
+            </div>
+            
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mt-4">
+              <div class="flex-1">
+                <p class="text-stone-700 leading-relaxed text-base">{{ report.overallSummary }}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-5xl font-bold bg-gradient-to-r from-china-red to-amber-600 bg-clip-text text-transparent">{{ report.overallScore }}</span>
+                <span class="text-amber-600 text-2xl">/10</span>
+              </div>
+            </div>
+
+            <!-- 评分条 -->
+            <div class="mt-6">
+              <div class="h-2 bg-amber-100 rounded-full overflow-hidden shadow-inner">
+                <div
+                  :style="{ width: report.overallScore * 10 + '%' }"
+                  class="h-full bg-gradient-to-r from-china-red via-rose-500 to-amber-500 transition-all duration-1000 shadow-lg"
+                ></div>
+              </div>
             </div>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
-            <div
-              class="h-3 rounded-full transition-all duration-500"
-              :style="{ width: report.overallScore * 10 + '%', backgroundColor: getScoreColor(report.overallScore) }"
-            ></div>
-          </div>
-          <p class="text-china-brown leading-relaxed text-base">{{ report.overallSummary }}</p>
-        </div>
+        </section>
 
-        <!-- 人生运势曲线图 -->
+        <!-- 人生运势曲线 -->
         <LifeFortuneCurve
           v-if="fortuneData.length"
           :data="fortuneData"
           :events="fortuneEvents"
           :birth-year="birthYear"
-          class="mb-6"
+          class="mb-12"
         />
 
-        <!-- 八大分析模块 -->
-        <div class="space-y-4">
-          <div
-            v-for="(module, key) in modules"
-            :key="key"
-            class="chinese-card p-4 md:p-5 hover:shadow-lg transition-shadow"
-          >
-            <div class="flex flex-col sm:flex-row items-start gap-4">
-              <!-- 图标和标题 -->
-              <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-3xl mx-auto sm:mx-0"
-                   :class="getModuleBgClass(key)">
-                {{ module.icon }}
-              </div>
-
-              <!-- 内容 -->
-              <div class="flex-1 w-full">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                  <h4 class="font-bold text-base md:text-lg text-china-brown text-center sm:text-left">{{ module.title }}</h4>
-                  <div class="flex items-center justify-center sm:justify-end gap-2">
-                    <div class="w-20 md:w-24 bg-gray-200 rounded-full h-2">
-                      <div
-                        class="h-2 rounded-full"
-                        :style="{ width: module.score * 10 + '%', backgroundColor: getScoreColor(module.score) }"
-                      ></div>
-                    </div>
-                    <span class="font-bold text-lg" :style="{ color: getScoreColor(module.score) }">
-                      {{ module.score }}
-                    </span>
-                    <span class="text-gray-400 text-sm">分</span>
+        <!-- 八大分析模块 - 两列布局 -->
+        <section class="mb-12">
+          <h3 class="text-2xl font-bold text-center mb-8 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+            命理八章
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div
+              v-for="(module, key) in modules"
+              :key="key"
+              class="bg-stone-50 rounded-lg p-5 md:p-6 border border-stone-200 hover:border-stone-400 hover:shadow-lg transition-all duration-300 group"
+            >
+              <div class="flex gap-4 md:gap-5">
+                <!-- 图标 -->
+                <div class="flex-shrink-0">
+                  <div class="w-14 h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center border-2 border-stone-300 group-hover:border-stone-500 transition-colors shadow-sm" :class="getModuleBgClass(key)">
+                    <span class="text-2xl md:text-3xl">{{ module.icon }}</span>
                   </div>
                 </div>
-                <p class="text-gray-600 leading-relaxed text-sm md:text-base">{{ module.content }}</p>
+
+                <!-- 内容 -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <h4 class="text-base md:text-lg font-bold text-stone-800 tracking-wide">{{ module.title }}</h4>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                      <div class="w-20 md:w-24 h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                        <div
+                          :style="{ width: module.score * 10 + '%', backgroundColor: getScoreColor(module.score) }"
+                          class="h-full rounded-full transition-all duration-1000"
+                        ></div>
+                      </div>
+                      <span class="text-lg font-bold w-6 text-right" :style="{ color: getScoreColor(module.score) }">
+                        {{ module.score }}
+                      </span>
+                      <span class="text-stone-400 text-xs">分</span>
+                    </div>
+                  </div>
+                  <p class="text-stone-600 leading-relaxed text-sm md:text-base line-clamp-3">{{ module.content }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <!-- 评分说明 -->
-        <div class="chinese-card p-6 mt-6">
-          <h4 class="font-bold text-china-brown mb-4 text-center">评分说明</h4>
-          <div class="grid grid-cols-5 gap-2 text-center">
-            <div class="p-2 rounded-lg" style="background-color: rgba(34, 197, 94, 0.1)">
-              <div class="text-2xl font-bold text-green-500">9-10</div>
-              <div class="text-xs text-gray-600 mt-1">极佳</div>
+        <section class="mb-12">
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 border-2 border-amber-200">
+            <h4 class="text-lg font-bold text-center mb-6 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+              评分准则
+            </h4>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div class="text-center p-3 bg-green-50 rounded-lg border border-green-200">
+                <div class="text-2xl font-bold text-green-600">9-10</div>
+                <div class="text-xs text-stone-600 mt-1">极佳</div>
+              </div>
+              <div class="text-center p-3 bg-lime-50 rounded-lg border border-lime-200">
+                <div class="text-2xl font-bold text-lime-600">7-8</div>
+                <div class="text-xs text-stone-600 mt-1">良好</div>
+              </div>
+              <div class="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="text-2xl font-bold text-yellow-600">5-6</div>
+                <div class="text-xs text-stone-600 mt-1">中等</div>
+              </div>
+              <div class="text-center p-3 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="text-2xl font-bold text-orange-600">3-4</div>
+                <div class="text-xs text-stone-600 mt-1">较弱</div>
+              </div>
+              <div class="text-center p-3 bg-red-50 rounded-lg border border-red-200 col-span-2 md:col-span-1">
+                <div class="text-2xl font-bold text-red-600">1-2</div>
+                <div class="text-xs text-stone-600 mt-1">需注意</div>
+              </div>
             </div>
-            <div class="p-2 rounded-lg" style="background-color: rgba(132, 204, 22, 0.1)">
-              <div class="text-2xl font-bold text-lime-500">7-8</div>
-              <div class="text-xs text-gray-600 mt-1">良好</div>
-            </div>
-            <div class="p-2 rounded-lg" style="background-color: rgba(234, 179, 8, 0.1)">
-              <div class="text-2xl font-bold text-yellow-500">5-6</div>
-              <div class="text-xs text-gray-600 mt-1">一般</div>
-            </div>
-            <div class="p-2 rounded-lg" style="background-color: rgba(249, 115, 22, 0.1)">
-              <div class="text-2xl font-bold text-orange-500">3-4</div>
-              <div class="text-xs text-gray-600 mt-1">较弱</div>
-            </div>
-            <div class="p-2 rounded-lg" style="background-color: rgba(239, 68, 68, 0.1)">
-              <div class="text-2xl font-bold text-red-500">1-2</div>
-              <div class="text-xs text-gray-600 mt-1">需注意</div>
-            </div>
+            <p class="text-xs text-stone-400 mt-6 text-center leading-relaxed">
+              本报告依据河洛理数、八字命理、渊海子平、三命通会等传统典籍，由AI智能分析生成，仅供参悟。
+            </p>
           </div>
-          <p class="text-xs text-gray-400 mt-4 text-center leading-relaxed">
-            本报告基于河洛数理、八字命理、渊海子平、三命通会、盲派八字等传统命理典籍，由AI结合现代解读生成，仅供参考。
-          </p>
-        </div>
+        </section>
       </div>
     </template>
 
     <!-- 无数据 -->
     <div v-else class="min-h-screen flex flex-col items-center justify-center p-6">
       <div class="text-center">
-        <div class="text-6xl mb-4">📋</div>
-        <h2 class="text-xl font-bold text-gray-700 mb-2">暂无命理报告</h2>
-        <p class="text-gray-500 mb-6">请先创建档案或选择已有档案进行命理分析</p>
-        <button @click="$router.push('/bazi')" class="chinese-btn">
-          去测算
+        <div class="w-24 h-24 mx-auto mb-6 border-2 border-stone-300 rounded-lg flex items-center justify-center">
+          <span class="text-4xl text-stone-400">☷</span>
+        </div>
+        <h2 class="text-xl font-bold text-stone-700 mb-2">暂无命理记录</h2>
+        <p class="text-stone-500 mb-6">命由天定，运由己造</p>
+        <button @click="$router.push('/bazi')" class="px-8 py-3 bg-stone-800 text-stone-50 rounded-lg hover:bg-stone-700 transition-colors tracking-wide">
+          开始测算
         </button>
       </div>
     </div>
@@ -238,7 +429,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/api'
 import LifeFortuneCurve from '@/components/LifeFortuneCurve.vue'
@@ -252,11 +443,11 @@ const fortuneData = ref<any[]>([])
 const fortuneEvents = ref<any[]>([])
 const birthYear = ref<number>(0)
 const analysisSteps = ref([
-  { text: '解析四柱八字', status: 'pending' },
-  { text: '分析五行配置', status: 'pending' },
-  { text: '推算大运流年', status: 'pending' },
-  { text: '解读十神关系', status: 'pending' },
-  { text: '生成命理报告', status: 'pending' }
+  { text: '解析四柱', status: 'pending' },
+  { text: '分析五行', status: 'pending' },
+  { text: '推算大运', status: 'pending' },
+  { text: '解读十神', status: 'pending' },
+  { text: '生成命书', status: 'pending' }
 ])
 
 const wuxingData = computed(() => {
@@ -264,22 +455,20 @@ const wuxingData = computed(() => {
   const wuxing = report.value.wuxing
   const total = wuxing.total || (wuxing.金 + wuxing.木 + wuxing.水 + wuxing.火 + wuxing.土) || 1
   return [
-    { label: '金', count: wuxing.金 || 0, color: '#fbbf24', percentage: Math.round(((wuxing.金 || 0) / total) * 100) },
-    { label: '木', count: wuxing.木 || 0, color: '#22c55e', percentage: Math.round(((wuxing.木 || 0) / total) * 100) },
-    { label: '水', count: wuxing.水 || 0, color: '#3b82f6', percentage: Math.round(((wuxing.水 || 0) / total) * 100) },
-    { label: '火', count: wuxing.火 || 0, color: '#ef4444', percentage: Math.round(((wuxing.火 || 0) / total) * 100) },
-    { label: '土', count: wuxing.土 || 0, color: '#a855f7', percentage: Math.round(((wuxing.土 || 0) / total) * 100) }
+    { label: '金', count: wuxing.金 || 0, color: '#d4af37', percentage: Math.round(((wuxing.金 || 0) / total) * 100) },
+    { label: '木', count: wuxing.木 || 0, color: '#228b22', percentage: Math.round(((wuxing.木 || 0) / total) * 100) },
+    { label: '水', count: wuxing.水 || 0, color: '#4682b4', percentage: Math.round(((wuxing.水 || 0) / total) * 100) },
+    { label: '火', count: wuxing.火 || 0, color: '#dc143c', percentage: Math.round(((wuxing.火 || 0) / total) * 100) },
+    { label: '土', count: wuxing.土 || 0, color: '#8b4513', percentage: Math.round(((wuxing.土 || 0) / total) * 100) }
   ]
 })
 
 const fourPillars = computed(() => {
-  // 优先从report获取bazi数据
   const bazi = report.value?.bazi
   if (!bazi) return []
   
   const fp = bazi.fourPillars
   const tianGan = bazi.tianGan || []
-  const diZhi = bazi.diZhi || []
   
   return [
     { label: '年柱', value: fp?.year || '', ganZhi: tianGan[0] || '' },
@@ -294,26 +483,45 @@ const modules = computed(() => {
   return report.value.modules
 })
 
+const getOffset = (index: number) => {
+  let offset = 0
+  for (let i = 0; i < index; i++) {
+    offset += wuxingData.value[i].percentage * 5.02
+  }
+  return offset
+}
+
 const getScoreColor = (score: number) => {
-  if (score >= 9) return '#22c55e'
-  if (score >= 7) return '#84cc16'
-  if (score >= 5) return '#eab308'
-  if (score >= 3) return '#f97316'
-  return '#ef4444'
+  if (score >= 9) return '#16a34a'
+  if (score >= 7) return '#65a30d'
+  if (score >= 5) return '#ca8a04'
+  if (score >= 3) return '#ea580c'
+  return '#dc2626'
+}
+
+const getWuxingColor = (wuxing: string) => {
+  const colors: Record<string, string> = {
+    '金': '#d4af37',
+    '木': '#228b22',
+    '水': '#4682b4',
+    '火': '#dc143c',
+    '土': '#8b4513'
+  }
+  return colors[wuxing] || '#4a4a4a'
 }
 
 const getModuleBgClass = (key: string) => {
   const bgClasses: Record<string, string> = {
-    personality: 'bg-blue-100',
-    career: 'bg-yellow-100',
-    marriage: 'bg-pink-100',
-    wealth: 'bg-green-100',
-    health: 'bg-red-100',
-    guiren: 'bg-purple-100',
-    yearly: 'bg-orange-100',
-    attention: 'bg-gray-100'
+    personality: 'bg-blue-50',
+    career: 'bg-amber-50',
+    marriage: 'bg-pink-50',
+    wealth: 'bg-green-50',
+    health: 'bg-red-50',
+    guiren: 'bg-purple-50',
+    yearly: 'bg-orange-50',
+    attention: 'bg-stone-100'
   }
-  return bgClasses[key] || 'bg-gray-100'
+  return bgClasses[key] || 'bg-stone-100'
 }
 
 const updateProgress = (stepIndex: number, status: 'pending' | 'active' | 'completed') => {
@@ -346,13 +554,11 @@ const simulateProgress = () => {
 }
 
 const generateReport = async () => {
-  // 优先从历史记录读取数据
   const historyDataStr = localStorage.getItem('historyReport')
   if (historyDataStr) {
     try {
       const historyData = JSON.parse(historyDataStr)
       
-      // 填充 profile
       profile.value = {
         name: '历史记录',
         gender: historyData.gender || 'male',
@@ -361,41 +567,33 @@ const generateReport = async () => {
         location: {}
       }
       
-      // 计算出生年份
       const birthDateStr = historyData.birthDate || ''
       birthYear.value = birthDateStr ? parseInt(birthDateStr.split('-')[0]) : 1990
       
-      // 解析 ai_result
       const aiResult = typeof historyData.aiResult === 'string' 
         ? JSON.parse(historyData.aiResult) 
         : historyData.aiResult
       
-      // 构建 report 数据
       report.value = {
         overallScore: aiResult?.overallScore || 7,
         overallSummary: aiResult?.overallSummary || '',
         wuxing: aiResult?.wuxing || { 金: 1, 木: 1, 水: 1, 火: 1, 土: 1, total: 5 },
         modules: aiResult?.modules || {},
-        // 从历史记录或 aiResult 中获取 bazi 数据
         bazi: aiResult?.bazi || historyData.baziData || null
       }
       
-      // 填充运势数据
       fortuneData.value = aiResult?.fortuneData || []
       fortuneEvents.value = aiResult?.fortuneEvents || []
       
-      // 清理历史记录数据
       localStorage.removeItem('historyReport')
       
       loading.value = false
       return
     } catch (e) {
       console.error('解析历史记录失败:', e)
-      // 继续使用正常流程
     }
   }
   
-  // 正常流程：从 currentProfile 读取并生成报告
   const stored = localStorage.getItem('currentProfile')
   if (!stored) {
     loading.value = false
@@ -406,14 +604,12 @@ const generateReport = async () => {
   loading.value = true
   progress.value = 0
 
-  // 计算出生年份
   const birthDateStr = profile.value.birthDate || ''
   birthYear.value = birthDateStr ? parseInt(birthDateStr.split('-')[0]) : 1990
 
   const progressInterval = simulateProgress()
 
   try {
-    // 并行请求报告和运势曲线数据
     const [reportRes, fortuneRes] = await Promise.all([
       api.post('/bazi/report', {
         birthDate: profile.value.birthDate,
@@ -435,7 +631,6 @@ const generateReport = async () => {
     fortuneData.value = fortuneRes.data.data || []
     fortuneEvents.value = fortuneRes.data.events || []
 
-    // 保存到历史记录
     try {
       await api.post('/history', {
         type: 'full',
@@ -451,7 +646,6 @@ const generateReport = async () => {
           fortuneData: fortuneData.value,
           fortuneEvents: fortuneEvents.value,
           birthYear: birthYear.value,
-          // 将 bazi 数据也保存到 aiResult 中，方便历史记录显示
           bazi: reportRes.data.bazi
         })
       })
@@ -473,22 +667,18 @@ const generateReport = async () => {
   }
 }
 
-// 从历史记录加载报告
 const loadFromHistory = async (historyId: string) => {
   loading.value = true
   try {
     const res = await api.get(`/history/${historyId}`)
     const record = res.data
-    // 解析存储的完整报告数据
     try {
       const savedData = JSON.parse(record.ai_result)
       report.value = savedData
-      // 加载运势曲线数据
       fortuneData.value = savedData.fortuneData || []
       fortuneEvents.value = savedData.fortuneEvents || []
       birthYear.value = savedData.birthYear || parseInt(record.birth_date?.split('-')[0] || '1990')
     } catch {
-      // 如果不是JSON格式，说明是旧格式的纯文本结果
       report.value = null
       alert('该历史记录格式不支持完整展示，请重新测算')
     }
@@ -512,15 +702,20 @@ onMounted(() => {
 
 <style scoped>
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
 }
 </style>

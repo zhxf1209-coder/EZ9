@@ -24,6 +24,13 @@
       <p class="mt-6 text-center text-china-brown">
         已有账号？<router-link to="/login" class="text-china-red hover:underline">立即登录</router-link>
       </p>
+
+      <div class="mt-6 text-xs text-gray-500 text-center">
+        点击注册即表示您已阅读并同意
+        <router-link to="/terms" class="text-china-red hover:underline">《服务条款》</router-link>
+        和
+        <router-link to="/privacy" class="text-china-red hover:underline">《隐私政策》</router-link>
+      </div>
     </div>
   </div>
 </template>

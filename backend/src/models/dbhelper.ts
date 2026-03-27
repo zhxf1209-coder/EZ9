@@ -7,6 +7,24 @@ export function setDb(database: Database) {
   db = database
 }
 
+export function run(sql: string, params: any[] = []) {
+  db.run(sql, params)
+  saveDB()
+}
+
+export function getAll(sql: string, params: any[] = []): any[] {
+  const results: any[] = []
+  const stmt = db.prepare(sql)
+  if (params.length > 0) {
+    stmt.bind(params)
+  }
+  while (stmt.step()) {
+    results.push(stmt.getAsObject())
+  }
+  stmt.free()
+  return results
+}
+
 export function prepare(sql: string) {
   return {
     run: (...params: any[]) => {

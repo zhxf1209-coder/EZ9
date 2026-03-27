@@ -16,7 +16,10 @@ const router = createRouter({
     { path: '/login', name: 'Login', component: () => import('@/views/Login.vue') },
     { path: '/register', name: 'Register', component: () => import('@/views/Register.vue') },
     { path: '/history', name: 'History', component: () => import('@/views/History.vue') },
-    { path: '/settings', name: 'Settings', component: () => import('@/views/Settings.vue') }
+    { path: '/settings', name: 'Settings', component: () => import('@/views/Settings.vue') },
+    { path: '/terms', name: 'TermsOfService', component: () => import('@/views/TermsOfService.vue') },
+    { path: '/privacy', name: 'PrivacyPolicy', component: () => import('@/views/PrivacyPolicy.vue') },
+    { path: '/admin', name: 'AdminDashboard', component: () => import('@/views/AdminDashboard.vue') }
   ]
 })
 

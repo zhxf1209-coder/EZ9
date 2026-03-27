@@ -169,13 +169,16 @@
     </nav>
 
     <!-- 主内容区域 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-20">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />
         </transition>
       </router-view>
     </main>
+
+    <!-- 悬浮咨询球 -->
+    <ContactFloat />
 
     <!-- 页脚 -->
     <footer class="bg-gradient-to-r from-china-brown to-brown-800 text-china-cream py-8 mt-auto">
@@ -185,6 +188,9 @@
           <p class="text-sm text-white/70">以易理为根，以AI为翼，助君趋吉避凶</p>
           <div class="mt-4 pt-4 border-t border-white/20">
             <p class="text-xs text-white/50">© {{ currentYear }} 易经命理智能分析系统 | 传承千年智慧</p>
+            <p class="text-xs text-white/50 mt-1">
+              <router-link to="/terms" class="hover:text-white/80 underline">仅供娱乐与文化研究，请勿迷信</router-link>
+            </p>
           </div>
         </div>
       </div>
@@ -204,6 +210,7 @@ import { useUserStore } from './stores/user'
 import DeviceInfo from './components/DeviceInfo.vue'
 import MobilePreviewToggle from './components/MobilePreviewToggle.vue'
 import BrandLogo from './components/BrandLogo.vue'
+import ContactFloat from './components/ContactFloat.vue'
 
 const userStore = useUserStore()
 const mobileMenuOpen = ref(false)

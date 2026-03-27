@@ -51,7 +51,7 @@
     </div>
 
     <div v-if="useManual || form.birthDate" class="manual-form">
-      <slot name="manual-form" :form="form" :selectLocation="selectLocation" :showLocationPicker="showLocationPicker" :searchQuery="searchQuery" :filteredCities="filteredCities">
+      <slot name="manual-form" :form="form" :selectLocation="selectLocation" :showLocationPicker="setShowLocationPicker" :searchQuery="searchQuery" :filteredCities="filteredCities">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6">
           <div>
             <label class="block text-china-brown mb-2 font-medium">
@@ -232,6 +232,9 @@ const form = ref<FormData>({
 })
 
 const showLocationPicker = ref(false)
+const setShowLocationPicker = (value: boolean) => {
+  showLocationPicker.value = value
+}
 const searchQuery = ref('')
 
 const cities = [

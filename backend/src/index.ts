@@ -9,6 +9,7 @@ import settingsRoutes from './routes/settings.js'
 import historyRoutes from './routes/history.js'
 import testRoutes from './routes/test.js'
 import profilesRoutes from './routes/profiles.js'
+import adminRoutes from './routes/admin.js'
 import { initDB, getDb } from './models/db.js'
 import { setDb } from './models/dbhelper.js'
 import {
@@ -59,6 +60,7 @@ async function startServer() {
   app.use('/api/history', historyRoutes)
   app.use('/api/test', testRoutes)
   app.use('/api/profiles', profilesRoutes)
+  app.use('/api/admin', adminRoutes)
 
   // 全局错误处理
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
