@@ -1,0 +1,213 @@
+# 京东云部署 - 快速开始指南
+
+## 第一步：复制以下命令到PowerShell终端
+
+### 1. 测试SSH连接
+```powershell
+ssh root@111.228.4.197
+# 输入密码: Happy10.10
+```
+
+### 2. 在服务器上执行以下命令（复制粘贴全部）：
+
+```bash
+# ===== 初始化服务器环境 =====
+
+# 更新系统
+apt-get update && apt-get upgrade -y
+
+# 安装必要软件
+apt-get install -y curl wget git nginx
+
+# 安装Node.js 18.x
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+
+# 安装PM2
+npm install -g pm2
+
+# 验证安装
+node -v
+npm -v
+pm2 -v
+
+# ===== 创建应用目录 =====
+mkdir -p /opt/EZ9/backend
+mkdir -p /opt/EZ9/frontend
+
+# ===== 克隆并部署后端 =====
+cd /opt/EZ9/backend
+
+# 克隆代码
+git clone https://github.com/zhxf1209-coder/EZ9.git temp_backend
+cp -r temp_backend/* .
+rm -rf temp_backend
+
+# 安装依赖
+npm install
+
+# 创建生产环境配置
+cat > .env.production << 'ENDFILE'
+NODE_ENV=production
+PORT=3000
+JWT_SECRET=EZ9_Secret_Key_2024_ChangeThis
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=Happy10.10
+DB_NAME=EZ9
+ENDFILE
+
+# 编译
+npm run build
+
+# 启动PM2
+pm2 stop 'ez9-backend' 2>/dev/null
+pm2 start dist/index.js --name 'ez9-backend'
+pm2 save
+
+# ===== 克隆并部署前端 =====
+cd /opt/EZ9/frontend
+
+# 克隆代码
+git clone https://github.com/zhxf1209-coder/EZ9.git temp_frontend
+cp -r temp_frontend/frontend/* .
+rm -rf temp_frontend
+
+# 安装依赖
+npm install
+
+# 修改API配置
+# 编辑 src/api/index.ts，将 baseURL 改为：
+# baseURL: 'http://111.228.4.197:3000/api'
+
+# 打包
+npm run build
+
+# ===== 配置Nginx =====
+cat > /etc/nginx/sites-available/EZ9 << 'EOF'
+server {
+    listen 3001;
+    server_name _;
+    
+    root /opt/EZ9/frontend/dist;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+EOF
+
+# 启用配置
+rm -f /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/EZ9 /etc/nginx/sites-enabled/
+
+# 测试并重启Nginx
+nginx -t
+systemctl restart nginx
+
+# ===== 配置防火墙 =====
+ufw allow 3001/tcp
+ufw allow 3000/tcp
+ufw allow 22/tcp
+
+# ===== 验证部署 =====
+echo "=== 检查服务状态 ==="
+pm2 list
+echo ""
+echo "=== 检查端口 ==="
+netstat -tlnp | grep -E '3000|3001'
+echo ""
+echo "=== 测试API ==="
+curl -s http://localhost:3000/api/health || echo "API未响应"
+echo ""
+echo "=== 测试前端 ==="
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3001 || echo "前端未响应"
+
+echo ""
+echo "=========================================="
+echo "  部署完成！"
+echo "  前端访问地址：http://111.228.4.197:3001"
+echo "  后端API地址：http://111.228.4.197:3000"
+echo "=========================================="
+```
+
+## 第二步：复制以上所有命令到SSH终端执行
+
+## 第三步：等待部署完成（大约5-10分钟）
+
+## 第四步：访问应用
+打开浏览器访问：
+**http://111.228.4.197:3001**
+
+## 常用管理命令
+
+### 查看后端日志
+```bash
+pm2 logs 'ez9-backend'
+```
+
+### 重启后端
+```bash
+pm2 restart 'ez9-backend'
+```
+
+### 重启前端（Nginx）
+```bash
+systemctl restart nginx
+```
+
+### 更新代码
+```bash
+cd /opt/EZ9/backend
+git pull && npm install && npm run build && pm2 restart 'ez9-backend'
+
+cd /opt/EZ9/frontend
+git pull && npm install && npm run build && systemctl restart nginx
+```
+
+## 故障排查
+
+### 如果前端无法访问
+```bash
+systemctl status nginx
+nginx -t
+```
+
+### 如果后端无法启动
+```bash
+pm2 logs 'ez9-backend' --err
+```
+
+### 检查端口占用
+```bash
+netstat -tlnp | grep 3000
+netstat -tlnp | grep 3001
+```
+
+## 安全建议（重要）
+
+1. **修改默认密码**
+2. **配置SSH密钥**（禁用密码登录）
+3. **启用防火墙**
+4. **配置SSL证书**（可选但推荐）
+5. **定期备份**
+
+## 备份建议
+
+```bash
+# 备份数据库
+mysqldump -u root -p EZ9 > /backup/EZ9_$(date +%Y%m%d).sql
+
+# 备份应用
+tar -czf /backup/EZ9_$(date +%Y%m%d).tar.gz /opt/EZ9
+```
