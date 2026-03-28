@@ -4,6 +4,22 @@ import { authMiddleware, AuthRequest } from '../middleware/auth.js'
 
 const router = Router()
 
+router.get('/contact', (req, res) => {
+  const stmt = db.prepare("SELECT config_key, config_value FROM site_config WHERE config_key IN ('wechat_qrcode', 'contact_text', 'contact_title')")
+  const configs = stmt.all() as any[]
+  
+  const result: Record<string, string> = {}
+  configs.forEach(item => {
+    result[item.config_key] = item.config_value
+  })
+  
+  res.json({
+    wechatQrcode: result.wechat_qrcode || '',
+    contactText: result.contact_text || '',
+    contactTitle: result.contact_title || '添加专家咨询更多内容'
+  })
+})
+
 router.get('/', authMiddleware, (req: AuthRequest, res) => {
   console.log('读取设置，用户ID:', req.userId)
   const stmt = db.prepare('SELECT ai_provider, api_key, model_name FROM settings WHERE user_id = ?')

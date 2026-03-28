@@ -90,14 +90,20 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-china-brown mb-1">微信二维码图片（Base64）</label>
-              <textarea
-                v-model="config.wechat_qrcode"
-                rows="4"
-                class="w-full px-4 py-2 border border-china-gold/30 rounded-lg focus:ring-2 focus:ring-china-gold focus:border-transparent font-mono text-xs"
-                placeholder="粘贴微信二维码的 Base64 图片数据"
-              ></textarea>
-              <p class="text-xs text-gray-500 mt-1">请上传微信二维码图片并转换为 Base64 格式后粘贴到此处</p>
+              <label class="block text-sm font-medium text-china-brown mb-1">微信二维码图片</label>
+              
+              <div class="mt-2">
+                <label class="upload-btn">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    @change="handleQrcodeUpload"
+                    class="hidden"
+                  />
+                  <span>📤 选择图片</span>
+                </label>
+                <p class="text-xs text-gray-500 mt-2">支持 JPG、PNG 格式，建议尺寸 200x200 像素</p>
+              </div>
               
               <div v-if="config.wechat_qrcode" class="mt-4">
                 <p class="text-sm text-gray-500 mb-2">预览：</p>
@@ -106,6 +112,13 @@
                   alt="微信二维码预览" 
                   class="max-w-xs border border-gray-200 rounded-lg"
                 />
+                <button 
+                  type="button"
+                  @click="clearQrcode"
+                  class="text-xs text-red-500 hover:underline mt-2"
+                >
+                  删除图片
+                </button>
               </div>
             </div>
 
@@ -168,7 +181,7 @@ const handleLogin = async () => {
   error.value = ''
   
   try {
-    const response = await api.post('/api/admin/login', loginForm.value)
+    const response = await api.post('/admin/login', loginForm.value)
     localStorage.setItem('admin_token', response.data.token)
     isLoggedIn.value = true
     loadData()
@@ -185,6 +198,26 @@ const handleLogout = () => {
   loginForm.value = { username: '', password: '' }
 }
 
+const handleQrcodeUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  
+  if (file.size > 2 * 1024 * 1024) {
+    alert('图片大小不能超过 2MB')
+    return
+  }
+  
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    config.value.wechat_qrcode = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+const clearQrcode = () => {
+  config.value.wechat_qrcode = ''
+}
+
 const loadData = async () => {
   try {
     const token = localStorage.getItem('admin_token')
@@ -193,8 +226,8 @@ const loadData = async () => {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`
     
     const [statsRes, configRes] = await Promise.all([
-      api.get('/api/admin/stats'),
-      api.get('/api/admin/config')
+      api.get('/admin/stats'),
+      api.get('/admin/config')
     ])
     
     stats.value = statsRes.data
@@ -209,7 +242,7 @@ const saveConfig = async () => {
   saveSuccess.value = false
   
   try {
-    await api.post('/api/admin/config', config.value)
+    await api.post('/admin/config', config.value)
     saveSuccess.value = true
     setTimeout(() => {
       saveSuccess.value = false
@@ -230,3 +263,29 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d4a574, #c9302c);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(201, 48, 44, 0.3);
+}
+
+.upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(201, 48, 44, 0.4);
+}
+
+.upload-btn:active {
+  transform: translateY(0);
+}
+</style>

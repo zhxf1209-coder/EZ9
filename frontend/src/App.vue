@@ -181,14 +181,14 @@
     <ContactFloat />
 
     <!-- 页脚 -->
-    <footer class="bg-gradient-to-r from-china-brown to-brown-800 text-china-cream py-8 mt-auto">
+    <footer class="bg-gradient-to-r from-china-brown to-brown-800 text-china-cream py-5 mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <p class="font-chinese text-lg mb-2">知命而行，顺势而为</p>
-          <p class="text-sm text-white/70">以易理为根，以AI为翼，助君趋吉避凶</p>
-          <div class="mt-4 pt-4 border-t border-white/20">
+          <p class="font-chinese text-base mb-1">知命而行，顺势而为</p>
+          <p class="text-xs sm:text-sm text-white/70">以易理为根，以AI为翼，助君趋吉避凶</p>
+          <div class="mt-3 pt-3 border-t border-white/20">
             <p class="text-xs text-white/50">© {{ currentYear }} 易经命理智能分析系统 | 传承千年智慧</p>
-            <p class="text-xs text-white/50 mt-1">
+            <p class="text-xs text-white/50 mt-0.5">
               <router-link to="/terms" class="hover:text-white/80 underline">仅供娱乐与文化研究，请勿迷信</router-link>
             </p>
           </div>
@@ -196,9 +196,6 @@
       </div>
     </footer>
 
-    <!-- 设备信息面板 (开发调试用) -->
-    <DeviceInfo />
-    
     <!-- 手机预览切换按钮 (桌面端显示) -->
     <MobilePreviewToggle />
   </div>
@@ -207,7 +204,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useUserStore } from './stores/user'
-import DeviceInfo from './components/DeviceInfo.vue'
 import MobilePreviewToggle from './components/MobilePreviewToggle.vue'
 import BrandLogo from './components/BrandLogo.vue'
 import ContactFloat from './components/ContactFloat.vue'

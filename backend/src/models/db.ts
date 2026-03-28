@@ -108,6 +108,12 @@ export async function initDB() {
     console.log('Default admin account created: admin / aa631631')
   }
 
+  const existingGuest = db.exec("SELECT id FROM users WHERE username = 'guest'")
+  if (existingGuest.length === 0 || existingGuest[0].values.length === 0) {
+    db.run("INSERT INTO users (username, password) VALUES (?, ?)", ['guest', ''])
+    console.log('Guest user created for anonymous history records')
+  }
+
   const configKeys = ['wechat_qrcode', 'contact_text', 'contact_title']
   for (const key of configKeys) {
     const existing = db.exec(`SELECT id FROM site_config WHERE config_key = '${key}'`)

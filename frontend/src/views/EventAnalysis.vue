@@ -530,6 +530,13 @@ const analyze = async () => {
     
     // 保存到历史记录
     try {
+      const fullReportData = {
+        marriageResult: res.data.content,
+        bazi1: res.data.bazi,
+        bazi2: res.data.partnerBazi,
+        name1: res.data.name,
+        name2: res.data.partnerName
+      }
       await api.post('/history', {
         type: 'marriage',
         birthDate: currentForm.birthDate,
@@ -538,8 +545,8 @@ const analyze = async () => {
         partnerBirthDate: partnerForm.value.birthDate,
         partnerBirthTime: partnerForm.value.birthTime,
         partnerGender: partnerForm.value.gender,
-        baziData: res.data.bazi || null,
-        aiResult: res.data.content
+        baziData: currentForm.birthDate + ' ' + currentForm.birthTime,
+        aiResult: JSON.stringify(fullReportData)
       })
     } catch (historyErr) {
       console.warn('保存历史记录失败:', historyErr)
