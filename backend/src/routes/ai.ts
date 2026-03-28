@@ -28,8 +28,13 @@ router.post('/interpret', authMiddleware, async (req: AuthRequest, res: Response
     const stmt = db.prepare('SELECT ai_provider, api_key FROM settings WHERE user_id = ?')
     const settings = stmt.get(req.userId) as any
 
-    if (!settings?.api_key) {
-      return res.status(400).json({ error: '请先在设置中配置AI API密钥' })
+    let aiProvider = settings?.ai_provider
+    let apiKey = settings?.api_key
+
+    if (!apiKey) {
+      apiKey = process.env.DEFAULT_API_KEY || 'c671b870-ec9c-4118-a7c4-99d6b2e31d02'
+      aiProvider = 'doubao'
+      console.log('使用默认AI配置:', { provider: aiProvider, apiKey: '已配置' })
     }
 
     let finalBirthDate = birthDate
@@ -80,7 +85,7 @@ router.post('/interpret', authMiddleware, async (req: AuthRequest, res: Response
       partnerBaziData = calculateBazi(finalPartnerBirthDate, finalPartnerBirthTime, finalPartnerGender)
     }
 
-    const config = { provider: settings.ai_provider, apiKey: settings.api_key }
+    const config = { provider: aiProvider, apiKey: apiKey }
 
     // 婚姻合婚特殊处理
     if (type === 'marriage' && partnerBaziData) {

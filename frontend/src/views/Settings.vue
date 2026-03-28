@@ -1,6 +1,14 @@
 <template>
   <div class="max-w-2xl mx-auto">
-    <div class="chinese-card p-8">
+    <div v-if="!isLoggedIn" class="chinese-card p-8 text-center">
+      <h2 class="chinese-title text-2xl mb-6">设置</h2>
+      <p class="text-china-brown mb-4">请先登录后再访问设置页面</p>
+      <router-link to="/login" class="chinese-btn inline-block">
+        去登录
+      </router-link>
+    </div>
+
+    <div v-else class="chinese-card p-8">
       <h2 class="chinese-title text-2xl mb-6 text-center">设置</h2>
 
       <div class="mb-6">
@@ -100,6 +108,8 @@ const testSuccess = ref(false)
 const showApiKey = ref(false)
 const testPassed = ref(false)
 
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+
 const modelPlaceholder = computed(() => {
   if (form.aiProvider === 'doubao') {
     return '例如：doubao-seed-2-0-lite-260215'
@@ -109,12 +119,18 @@ const modelPlaceholder = computed(() => {
 })
 
 onMounted(async () => {
-  await userStore.loadSettings()
-  form.aiProvider = userStore.settings.aiProvider || 'doubao'
-  form.apiKey = userStore.settings.apiKey || ''
-  form.modelName = (userStore.settings as any).modelName || ''
-  if (form.apiKey) {
-    testPassed.value = true
+  if (!userStore.isLoggedIn) return
+  
+  try {
+    await userStore.loadSettings()
+    form.aiProvider = userStore.settings.aiProvider || 'doubao'
+    form.apiKey = userStore.settings.apiKey || ''
+    form.modelName = (userStore.settings as any).modelName || ''
+    if (form.apiKey) {
+      testPassed.value = true
+    }
+  } catch (e) {
+    console.error('加载设置失败:', e)
   }
 })
 

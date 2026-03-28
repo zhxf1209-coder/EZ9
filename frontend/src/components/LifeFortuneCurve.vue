@@ -1,29 +1,29 @@
 <template>
-  <div class="chinese-card p-4">
-    <h3 class="chinese-title text-lg mb-4 text-center">人生运势曲线</h3>
-    <div ref="chartRef" class="w-full h-80"></div>
+  <div class="chinese-card p-3 md:p-4">
+    <h3 class="chinese-title text-base md:text-lg mb-3 text-center">人生运势曲线</h3>
+    <div ref="chartRef" class="w-full h-64 md:h-72"></div>
     
     <!-- 关键点详情 - 只显示今年及未来的关键事件 -->
-    <div v-if="futureKeyPoints.length" class="mt-4 space-y-3">
-      <h4 class="font-semibold text-stone-700 text-center">未来关键事件</h4>
+    <div v-if="futureKeyPoints.length" class="mt-3 space-y-2">
+      <h4 class="font-semibold text-stone-700 text-center text-sm">未来关键事件</h4>
       <div 
         v-for="point in futureKeyPoints" 
         :key="point.year"
-        class="p-4 rounded-lg border-l-4 bg-stone-50"
+        class="p-3 rounded-lg border-l-4 bg-stone-50"
         :class="getPointClass(point.type)"
       >
-        <div class="flex justify-between items-start mb-2">
+        <div class="flex justify-between items-start mb-1">
           <div class="flex items-center gap-2">
-            <span class="font-bold text-stone-800 text-lg">{{ point.year }}年</span>
-            <span v-if="birthYear" class="text-sm text-stone-500">({{ point.year - birthYear }}岁)</span>
+            <span class="font-bold text-stone-800">{{ point.year }}年</span>
+            <span v-if="birthYear" class="text-xs text-stone-500">({{ point.year - birthYear }}岁)</span>
           </div>
-          <span class="text-xs px-3 py-1 rounded-full font-medium" :class="getBadgeClass(point.type)">
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium" :class="getBadgeClass(point.type)">
             {{ getTypeLabel(point.type) }}
           </span>
         </div>
-        <div class="font-medium text-stone-700 text-base mb-1">{{ point.title }}</div>
-        <div class="text-sm text-stone-600 leading-relaxed mb-2">{{ point.description }}</div>
-        <div v-if="point.advice" class="text-sm bg-green-50 p-2 rounded border border-green-200 mt-2">
+        <div class="font-medium text-stone-700 text-sm mb-1">{{ point.title }}</div>
+        <div class="text-xs text-stone-600 leading-relaxed mb-1">{{ point.description }}</div>
+        <div v-if="point.advice" class="text-xs bg-green-50 p-1.5 rounded border border-green-200 mt-1">
           <span class="font-semibold text-green-700">💡 建议：</span>
           <span class="text-green-700">{{ point.advice }}</span>
         </div>
@@ -255,24 +255,26 @@ const renderChart = () => {
       axisLine: { lineStyle: { color: '#C41E3A' } },
       axisLabel: {
         color: '#4A3728',
-        interval: Math.floor(filteredData.value.length / 10),
-        rotate: 0,
-        fontSize: 11
+        interval: Math.floor(filteredData.value.length / 6),
+        rotate: 45,
+        fontSize: 10,
+        textStyle: { fontSize: 10 }
       },
       name: '年份',
       nameLocation: 'middle',
-      nameGap: 30
+      nameGap: 50
     },
     yAxis: {
       type: 'value',
       min: 0,
       max: 100,
-      axisLine: { lineStyle: { color: '#C41E3A' } },
-      axisLabel: { color: '#4A3728', formatter: '{value}分' },
-      splitLine: { lineStyle: { color: '#D4A84B', opacity: 0.3 } },
-      name: '运势指数',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false },
+      splitLine: { show: false },
+      name: '',
       nameLocation: 'middle',
-      nameGap: 40
+      nameGap: 0
     },
     series: [{
       type: 'line',
@@ -337,7 +339,7 @@ const renderChart = () => {
         }
       }
     }],
-    grid: { left: 50, right: 30, top: 30, bottom: 50 }
+    grid: { left: 10, right: 20, top: 20, bottom: 60 }
   }
 
   chart.setOption(option)

@@ -129,9 +129,9 @@
 
     <!-- 报告内容 -->
     <template v-else-if="report">
-      <div class="max-w-5xl mx-auto px-4 py-8 pb-20">
+      <div class="max-w-5xl mx-auto px-4 py-4 md:py-6 pb-20">
         <!-- 标题区 -->
-        <header class="text-center mb-12">
+        <header class="text-center mb-6 md:mb-8">
           <div class="inline-block relative">
             <h1 class="text-4xl md:text-5xl font-bold tracking-widest mb-2 text-transparent bg-clip-text bg-gradient-to-r from-china-red via-rose-600 to-amber-600">
               八字命理报告
@@ -146,8 +146,8 @@
         </header>
 
         <!-- 四柱展示 -->
-        <section class="mb-12">
-          <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-lg p-6 md:p-8 border-2 border-amber-200 relative overflow-hidden shadow-md">
+        <section class="mb-6 md:mb-8">
+          <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-lg p-4 md:p-6 border-2 border-amber-200 relative overflow-hidden shadow-md">
             <!-- 动态背景纹理 - 温暖金色 -->
             <div class="absolute inset-0 opacity-10">
               <svg class="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
@@ -167,7 +167,7 @@
             <div class="absolute bottom-2 right-2 w-12 h-12 border-r-2 border-b-2 border-amber-400"></div>
 
             <div class="relative z-10">
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 <div
                   v-for="(pillar, key) in fourPillars"
                   :key="key"
@@ -175,40 +175,34 @@
                 >
                   <div class="relative">
                     <!-- 外层装饰框 - 温暖渐变 -->
-                    <div class="absolute -inset-1 bg-gradient-to-br from-amber-200 to-rose-200 rounded-xl opacity-60 blur-sm group-hover:opacity-80 transition-opacity"></div>
+                    <div class="absolute -inset-0.5 bg-gradient-to-br from-amber-200 to-rose-200 rounded-lg opacity-50 group-hover:opacity-70 transition-opacity"></div>
                     
                     <!-- 主卡片 - 温暖配色 -->
-                    <div class="relative bg-gradient-to-b from-white to-amber-50 rounded-xl p-4 md:p-6 border-2 border-amber-200 shadow-sm group-hover:shadow-xl transition-all duration-500 group-hover:-translate-y-2 group-hover:border-rose-300">
-                      <!-- 顶部装饰线 -->
-                      <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-60"></div>
-                      
+                    <div class="relative bg-gradient-to-b from-white to-amber-50 rounded-lg p-3 md:p-4 border-2 border-amber-300 shadow-sm group-hover:shadow-md transition-all duration-300">
                       <!-- 四柱值 - 渐变色 -->
-                      <div class="text-3xl md:text-4xl font-bold mb-2 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+                      <div class="text-2xl md:text-3xl font-bold text-china-red leading-tight">
                         {{ pillar.value }}
                       </div>
                       
                       <!-- 天干 -->
-                      <div class="text-xs text-amber-600 tracking-wider font-medium">{{ pillar.ganZhi }}</div>
-                      
-                      <!-- 底部装饰 -->
-                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-amber-300 to-transparent opacity-50"></div>
+                      <div class="text-xs text-china-brown tracking-wider font-medium leading-tight">{{ pillar.ganZhi }}</div>
                     </div>
 
                     <!-- 标签 - 温暖配色 -->
-                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-amber-50 to-rose-50 px-3 py-1 rounded-full border border-amber-300 shadow-sm">
-                      <span class="text-xs text-amber-700 font-medium tracking-wider">{{ pillar.label }}</span>
+                    <div class="mt-1 bg-gradient-to-r from-amber-50 to-rose-50 px-2 py-0.5 rounded-full border border-amber-300">
+                      <span class="text-xs text-amber-700 font-medium">{{ pillar.label }}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <!-- 日主信息 - 温暖配色 -->
-              <div class="mt-12 text-center">
-                <div class="inline-flex items-center gap-4 px-8 py-4 bg-white rounded-xl border-2 border-amber-200 shadow-md hover:shadow-lg transition-shadow">
-                  <span class="text-amber-700 font-medium">日主</span>
-                  <span class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wide">{{ report?.bazi?.dayMaster || '' }}</span>
-                  <span class="text-amber-300 text-2xl">|</span>
-                  <span class="text-2xl font-bold" :style="{ color: getWuxingColor(report?.bazi?.dayMasterWuxing || '') }">
+              <div class="mt-6 text-center">
+                <div class="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-xl border-2 border-amber-200 shadow-sm">
+                  <span class="text-amber-700 font-medium text-sm">日主</span>
+                  <span class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wide">{{ report?.bazi?.dayMaster || '' }}</span>
+                  <span class="text-amber-300">|</span>
+                  <span class="text-xl font-bold" :style="{ color: getWuxingColor(report?.bazi?.dayMasterWuxing || '') }">
                     {{ report?.bazi?.dayMasterWuxing || '' }}
                   </span>
                 </div>
@@ -218,36 +212,36 @@
         </section>
 
         <!-- 五行分布 -->
-        <section class="mb-12">
-          <h3 class="text-2xl font-bold text-center mb-8 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+        <section class="mb-6 md:mb-8">
+          <h3 class="text-xl font-bold text-center mb-4 md:mb-6 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
             五行气数
           </h3>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <!-- 环形图 -->
-            <div class="bg-stone-50 rounded-lg p-6 border border-stone-200">
-              <h4 class="text-lg font-medium text-stone-700 mb-6 text-center">五行分布</h4>
-              <div class="flex justify-center mb-6">
-                <div class="relative">
-                  <svg class="w-40 h-40 md:w-48 md:h-48 transform -rotate-90">
-                    <circle cx="96" cy="96" r="80" stroke="#e5e5e5" stroke-width="16" fill="none"/>
+            <div class="bg-stone-50 rounded-lg p-4 md:p-5 border border-stone-200">
+              <h4 class="text-base font-medium text-stone-700 mb-4 text-center">五行分布</h4>
+              <div class="flex justify-center mb-4">
+                <div class="relative w-40 h-40 md:w-48 md:h-48">
+                  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="75" stroke="#e5e5e5" stroke-width="15" fill="none"/>
                     <circle
                       v-for="(item, index) in wuxingData"
-                      :key="key"
-                      cx="96"
-                      cy="96"
-                      r="80"
+                      :key="index"
+                      cx="100"
+                      cy="100"
+                      r="75"
                       :stroke="item.color"
-                      stroke-width="16"
+                      stroke-width="15"
                       fill="none"
-                      :stroke-dasharray="`${item.percentage * 5.02} 502`"
+                      :stroke-dasharray="`${item.percentage * 4.71} 471`"
                       :stroke-dashoffset="-getOffset(index)"
                       class="transition-all duration-1000"
                     />
                   </svg>
                   <div class="absolute inset-0 flex items-center justify-center">
                     <div class="text-center">
-                      <div class="text-3xl font-bold text-stone-800">八</div>
+                      <div class="text-2xl font-bold text-stone-800">八</div>
                       <div class="text-xs text-stone-500">字</div>
                     </div>
                   </div>
@@ -255,9 +249,9 @@
               </div>
               
               <!-- 图例 -->
-              <div class="grid grid-cols-5 gap-2">
-                <div v-for="item in wuxingData" :key="key" class="text-center">
-                  <div class="w-3 h-3 rounded-full mx-auto mb-1" :style="{ backgroundColor: item.color }"></div>
+              <div class="grid grid-cols-5 gap-1 md:gap-2">
+                <div v-for="(item, index) in wuxingData" :key="index" class="text-center">
+                  <div class="w-2.5 h-2.5 rounded-full mx-auto mb-0.5" :style="{ backgroundColor: item.color }"></div>
                   <div class="text-xs text-stone-600">{{ item.label }}</div>
                   <div class="text-xs text-stone-400">{{ item.count }}</div>
                 </div>
@@ -265,27 +259,27 @@
             </div>
 
             <!-- 条形图 -->
-            <div class="bg-stone-50 rounded-lg p-6 border border-stone-200">
-              <h4 class="text-lg font-medium text-stone-700 mb-6 text-center">气数强弱</h4>
-              <div class="space-y-4">
-                <div v-for="item in wuxingData" :key="key" class="flex items-center gap-3 group">
-                  <div class="w-8 text-center">
+            <div class="bg-stone-50 rounded-lg p-4 md:p-5 border border-stone-200">
+              <h4 class="text-base font-medium text-stone-700 mb-4 text-center">气数强弱</h4>
+              <div class="space-y-3">
+                <div v-for="(item, index) in wuxingData" :key="index" class="flex items-center gap-2 group">
+                  <div class="w-6 text-center">
                     <span 
-                      class="text-2xl font-bold transition-all duration-300 group-hover:scale-125 group-hover:-translate-y-1 inline-block"
-                      :style="{ color: item.color, textShadow: `0 2px 8px ${item.color}40` }"
+                      class="text-xl font-bold transition-all duration-300 inline-block"
+                      :style="{ color: item.color }"
                     >
                       {{ item.label }}
                     </span>
                   </div>
-                  <div class="flex-1 h-6 bg-stone-200 rounded-full overflow-hidden">
+                  <div class="flex-1 h-4 bg-stone-200 rounded-full overflow-hidden">
                     <div
                       :style="{ width: item.percentage + '%', backgroundColor: item.color }"
-                      class="h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-2 shadow-md"
+                      class="h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-1.5"
                     >
                       <span v-if="item.percentage > 10" class="text-xs text-white font-medium">{{ item.count }}</span>
                     </div>
                   </div>
-                  <div class="w-10 text-right text-sm text-stone-600 font-medium">{{ item.percentage }}%</div>
+                  <div class="w-8 text-right text-xs text-stone-600 font-medium">{{ item.percentage }}%</div>
                 </div>
               </div>
             </div>
@@ -293,30 +287,30 @@
         </section>
 
         <!-- 命理总评 -->
-        <section class="mb-12">
-          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 md:p-8 border-2 border-amber-200 relative shadow-md">
-            <div class="absolute -top-3 left-8 bg-gradient-to-r from-amber-50 to-orange-50 px-4">
-              <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wider">
+        <section class="mb-6 md:mb-8">
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 md:p-6 border-2 border-amber-200 relative shadow-sm">
+            <div class="absolute -top-3 left-6 bg-gradient-to-r from-amber-50 to-orange-50 px-3">
+              <h3 class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600 tracking-wider">
                 命理总评
               </h3>
             </div>
             
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mt-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
               <div class="flex-1">
-                <p class="text-stone-700 leading-relaxed text-base">{{ report.overallSummary }}</p>
+                <p class="text-stone-700 leading-relaxed text-sm md:text-base">{{ report.overallSummary }}</p>
               </div>
-              <div class="flex items-center gap-3">
-                <span class="text-5xl font-bold bg-gradient-to-r from-china-red to-amber-600 bg-clip-text text-transparent">{{ report.overallScore }}</span>
-                <span class="text-amber-600 text-2xl">/10</span>
+              <div class="flex items-center gap-2">
+                <span class="text-4xl font-bold bg-gradient-to-r from-china-red to-amber-600 bg-clip-text text-transparent">{{ report.overallScore }}</span>
+                <span class="text-amber-600 text-xl">/10</span>
               </div>
             </div>
 
             <!-- 评分条 -->
-            <div class="mt-6">
-              <div class="h-2 bg-amber-100 rounded-full overflow-hidden shadow-inner">
+            <div class="mt-4">
+              <div class="h-1.5 bg-amber-100 rounded-full overflow-hidden">
                 <div
                   :style="{ width: report.overallScore * 10 + '%' }"
-                  class="h-full bg-gradient-to-r from-china-red via-rose-500 to-amber-500 transition-all duration-1000 shadow-lg"
+                  class="h-full bg-gradient-to-r from-china-red via-rose-500 to-amber-500 transition-all duration-1000"
                 ></div>
               </div>
             </div>
@@ -329,47 +323,47 @@
           :data="fortuneData"
           :events="fortuneEvents"
           :birth-year="birthYear"
-          class="mb-12"
+          class="mb-6 md:mb-8"
         />
 
         <!-- 八大分析模块 - 两列布局 -->
-        <section class="mb-12">
-          <h3 class="text-2xl font-bold text-center mb-8 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+        <section class="mb-6 md:mb-8">
+          <h3 class="text-xl font-bold text-center mb-4 md:mb-6 tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
             命理八章
           </h3>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
               v-for="(module, key) in modules"
               :key="key"
-              class="bg-stone-50 rounded-lg p-5 md:p-6 border border-stone-200 hover:border-stone-400 hover:shadow-lg transition-all duration-300 group"
+              class="bg-stone-50 rounded-lg p-4 border border-stone-200 hover:border-stone-400 hover:shadow-md transition-all duration-300 group"
             >
-              <div class="flex gap-4 md:gap-5">
+              <div class="flex gap-3">
                 <!-- 图标 -->
                 <div class="flex-shrink-0">
-                  <div class="w-14 h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center border-2 border-stone-300 group-hover:border-stone-500 transition-colors shadow-sm" :class="getModuleBgClass(key)">
-                    <span class="text-2xl md:text-3xl">{{ module.icon }}</span>
+                  <div class="w-12 h-12 rounded-lg flex items-center justify-center border border-stone-300 group-hover:border-stone-500 transition-colors" :class="getModuleBgClass(key)">
+                    <span class="text-2xl">{{ module.icon }}</span>
                   </div>
                 </div>
 
                 <!-- 内容 -->
                 <div class="flex-1 min-w-0">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                    <h4 class="text-base md:text-lg font-bold text-stone-800 tracking-wide">{{ module.title }}</h4>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                      <div class="w-20 md:w-24 h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <h4 class="text-sm md:text-base font-bold text-stone-800 tracking-wide">{{ module.title }}</h4>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <div class="w-16 md:w-20 h-1 bg-stone-200 rounded-full overflow-hidden">
                         <div
                           :style="{ width: module.score * 10 + '%', backgroundColor: getScoreColor(module.score) }"
                           class="h-full rounded-full transition-all duration-1000"
                         ></div>
                       </div>
-                      <span class="text-lg font-bold w-6 text-right" :style="{ color: getScoreColor(module.score) }">
+                      <span class="text-base font-bold w-5 text-right" :style="{ color: getScoreColor(module.score) }">
                         {{ module.score }}
                       </span>
                       <span class="text-stone-400 text-xs">分</span>
                     </div>
                   </div>
-                  <p class="text-stone-600 leading-relaxed text-sm md:text-base line-clamp-3">{{ module.content }}</p>
+                  <p class="text-stone-600 leading-relaxed text-xs md:text-sm">{{ module.content }}</p>
                 </div>
               </div>
             </div>
@@ -377,34 +371,34 @@
         </section>
 
         <!-- 评分说明 -->
-        <section class="mb-12">
-          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 border-2 border-amber-200">
-            <h4 class="text-lg font-bold text-center mb-6 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
+        <section class="mb-6">
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 border-2 border-amber-200">
+            <h4 class="text-base font-bold text-center mb-4 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-china-red to-amber-600">
               评分准则
             </h4>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div class="text-center p-3 bg-green-50 rounded-lg border border-green-200">
-                <div class="text-2xl font-bold text-green-600">9-10</div>
-                <div class="text-xs text-stone-600 mt-1">极佳</div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
+              <div class="text-center p-2 bg-green-50 rounded-lg border border-green-200">
+                <div class="text-lg font-bold text-green-600">9-10</div>
+                <div class="text-xs text-stone-600 mt-0.5">极佳</div>
               </div>
-              <div class="text-center p-3 bg-lime-50 rounded-lg border border-lime-200">
-                <div class="text-2xl font-bold text-lime-600">7-8</div>
-                <div class="text-xs text-stone-600 mt-1">良好</div>
+              <div class="text-center p-2 bg-lime-50 rounded-lg border border-lime-200">
+                <div class="text-lg font-bold text-lime-600">7-8</div>
+                <div class="text-xs text-stone-600 mt-0.5">良好</div>
               </div>
-              <div class="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div class="text-2xl font-bold text-yellow-600">5-6</div>
-                <div class="text-xs text-stone-600 mt-1">中等</div>
+              <div class="text-center p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="text-lg font-bold text-yellow-600">5-6</div>
+                <div class="text-xs text-stone-600 mt-0.5">中等</div>
               </div>
-              <div class="text-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                <div class="text-2xl font-bold text-orange-600">3-4</div>
-                <div class="text-xs text-stone-600 mt-1">较弱</div>
+              <div class="text-center p-2 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="text-lg font-bold text-orange-600">3-4</div>
+                <div class="text-xs text-stone-600 mt-0.5">较弱</div>
               </div>
-              <div class="text-center p-3 bg-red-50 rounded-lg border border-red-200 col-span-2 md:col-span-1">
-                <div class="text-2xl font-bold text-red-600">1-2</div>
-                <div class="text-xs text-stone-600 mt-1">需注意</div>
+              <div class="text-center p-2 bg-red-50 rounded-lg border border-red-200 col-span-2 md:col-span-1">
+                <div class="text-lg font-bold text-red-600">1-2</div>
+                <div class="text-xs text-stone-600 mt-0.5">需注意</div>
               </div>
             </div>
-            <p class="text-xs text-stone-400 mt-6 text-center leading-relaxed">
+            <p class="text-xs text-stone-400 mt-4 text-center leading-relaxed">
               本报告依据河洛理数、八字命理、渊海子平、三命通会等传统典籍，由AI智能分析生成，仅供参悟。
             </p>
           </div>
@@ -486,7 +480,7 @@ const modules = computed(() => {
 const getOffset = (index: number) => {
   let offset = 0
   for (let i = 0; i < index; i++) {
-    offset += wuxingData.value[i].percentage * 5.02
+    offset += wuxingData.value[i].percentage * 4.71
   }
   return offset
 }
