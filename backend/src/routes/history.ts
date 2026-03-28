@@ -57,7 +57,7 @@ router.get('/', (req, res) => {
   
   const countStmt = db.prepare(`SELECT COUNT(*) as total FROM history ${whereClause}`)
   const countResult = countStmt.get(...params)
-  const total = countResult?.total || 0
+  const total = Number(countResult?.total) || 0
   
   const stmt = db.prepare(`SELECT * FROM history ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
   const records = stmt.all(...params, pageSize, offset)
